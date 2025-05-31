@@ -29,31 +29,30 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') Download complete."
 stream_to_kafka() {
     local directory="$1"
     local topic="$2"
-    local header_lines=1
     local sleep_time=$3
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') Streaming data from ${directory} to Kafka topic ${topic}..."
 
     for csvfile in "${directory}"/*.csv; do
         echo "  Processing file: ${csvfile}"
-        tail -n +$((header_lines + 1)) "${csvfile}" | while IFS= read -r line; do
-            if [ -n "$line" ]; then
-                echo "$line" | kafka-console-producer.sh \
-                    --broker-list "${BOOTSTRAP_SERVER}" \
-                    --topic "${topic}" \
-                    --property "parse.key=false" \
-                    --property "parse.headers=false" \
-                    --property "key.separator=:" >/dev/null
-            fi
-            sleep "${sleep_time}"
-        done
+        tail -n +2 "${csvfile}" | \
+        kafka-console-producer.sh \
+            --broker-list "${BOOTSTRAP_SERVER}" \
+            --topic "${topic}" \
+            --property "parse.key=false" \
+            --property "parse.headers=false" \
+            --property "key.separator=:" &
+        sleep "${sleep_time}"
     done
+
+
+    wait
 }
 
 # --- First: Load static company data immediately ---
 stream_to_kafka "${SYMBOLS_FILES_DIR}" "${TOPIC_STOCK_SYMBOLS}" 0.0
 
 # --- Then: Stream stock data slowly (simulate real-time) ---
-stream_to_kafka "${STOCK_FILES_DIR}" "${TOPIC_STOCK_INPUT}" 0.1
+stream_to_kafka "${STOCK_FILES_DIR}" "${TOPIC_STOCK_INPUT}" 1
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') Finished streaming all data to Kafka."
