@@ -16,7 +16,7 @@ STOCK_FILES_DIR="${DOWNLOAD_DIR}/datasource1"
 SYMBOLS_FILES_DIR="${DOWNLOAD_DIR}/datasource2"
 
 # --- GCS Source ---
-GCS_BUCKET= $1
+GCS_BUCKET= "$1"
 
 # --- Download data from GCS ---
 echo "$(date '+%Y-%m-%d %H:%M:%S') Downloading data from GCS..."
