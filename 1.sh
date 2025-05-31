@@ -7,8 +7,12 @@ BROKER="${CLUSTER_NAME}-w-0:9092"
 
 echo "Kasowanie tematów Kafka..."
 for TOPIC in stock-input stock-symbols stock-aggregates stock-anomalies; do
-    kafka-topics.sh --bootstrap-server $BROKER --delete --topic $TOPIC
-    echo "Usunięto temat: $TOPIC"
+    if kafka-topics.sh --bootstrap-server $BROKER --list | grep -q "^${TOPIC}$"; then
+        kafka-topics.sh --bootstrap-server $BROKER --delete --topic $TOPIC
+        echo "Usunięto temat: $TOPIC"
+    else
+        echo "Temat ${TOPIC} nie istnieje, pomijam usuwanie."
+    fi
 done
 
 echo "Tworzenie tematów Kafka..."
