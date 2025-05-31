@@ -12,4 +12,19 @@ gcloud dataproc clusters create ${CLUSTER_NAME} \
 gs://goog-dataproc-initialization-actions-${REGION}/kafka/kafka.sh
 ```
 
+rozpakuj skrypty
+nadaj im uprawnienia
+```
+chmod +x *.sh
+```
 
+
+stwórz tematy kafki
+```
+./1.sh
+```
+
+załaduj dane
+```
+./2.sh <gs://psd-25/project>
+```
