@@ -27,4 +27,5 @@ stwórz tematy kafki
 załaduj dane
 ```
 ./2.sh <gs://psd-25/project>
+./2.sh gs://pbd-24-rs/project
 ```
