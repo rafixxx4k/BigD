@@ -29,3 +29,10 @@ załaduj dane
 ./2.sh <gs://psd-25/project>
 ./2.sh gs://pbd-24-rs/project
 ```
+uruchom przetwarzanie (zamiana klasy main)
+```
+java -cp /usr/lib/kafka/libs/*:stock-market.jar \
+ com.example.bigdata.ApacheLogToAlertRequests ${CLUSTER_NAME}-w-0:9092
+
+
+```

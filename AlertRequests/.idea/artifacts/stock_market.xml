@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="stock-market">
+    <output-path>$PROJECT_DIR$/out/artifacts/stock_market</output-path>
+    <root id="archive" name="stock-market.jar">
+      <element id="module-output" name="AlertRequests" />
+    </root>
+  </artifact>
+</component>
