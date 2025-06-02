@@ -44,17 +44,17 @@ public class ApacheLogToAlertRequests {
                 .mapValues(SymbolRecord::parseFromCSVLine);
 
         // Połącz strumienie (join)
-        KStream<String, StockSymbolRecord> joinedStream = stockStream.join(
-                symbolTable,
-                (stock, symbol) -> new StockSymbolRecord(stock, symbol)
-        );
+//        KStream<String, StockSymbolRecord> joinedStream = stockStream.join(
+//                symbolTable,
+//                (stock, symbol) -> new StockSymbolRecord(stock, symbol)
+//        );
 
         // Filtrowanie: tylko symbol == "A"
-        KStream<String, StockSymbolRecord> filteredStream = joinedStream
-                .filter((key, value) -> "A".equalsIgnoreCase(value.getStockRecord().getStockSymbol()));
+//        KStream<String, StockSymbolRecord> filteredStream = joinedStream
+//                .filter((key, value) -> "COP".equalsIgnoreCase(value.getStockRecord().getStockSymbol()));
 
         // Wyświetl na konsoli
-        filteredStream.foreach((key, value) -> System.out.println("JOINED: " + value));
+        stockStream.foreach((key, value) -> System.out.println("JOINED: " + value));
 
         final Topology topology = builder.build();
         System.out.println(topology.describe());
