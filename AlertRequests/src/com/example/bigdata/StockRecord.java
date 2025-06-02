@@ -11,7 +11,7 @@ public class StockRecord implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String dateString;      // Data notowania w formacie String
-    private Date date;              // Data jako obiekt Date
+//    private Date date;              // Data jako obiekt Date
     private double open;            // Cena otwarcia
     private double high;            // Maksymalna cena
     private double low;             // Minimalna cena
@@ -23,9 +23,9 @@ public class StockRecord implements Serializable {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     public StockRecord(String dateString, String open, String high, String low,
-                       String close, String adjClose, String volume, String stockSymbol) throws ParseException {
+                       String close, String adjClose, String volume, String stockSymbol){
         this.dateString = dateString;
-        this.date = sdf.parse(dateString); // Parsujemy datę
+//        this.date = dateString;
         this.open = Double.parseDouble(open);
         this.high = Double.parseDouble(high);
         this.low = Double.parseDouble(low);
@@ -35,7 +35,7 @@ public class StockRecord implements Serializable {
         this.stockSymbol = stockSymbol;
     }
 
-    public static StockRecord parseFromCSVLine(String csvLine) throws ParseException {
+    public static StockRecord parseFromCSVLine(String csvLine){
         // Date,Open,High,Low,Close,Adj Close,Volume,Stock
         String[] parts = csvLine.split(",");
         if (parts.length != 8) {
@@ -44,9 +44,9 @@ public class StockRecord implements Serializable {
         return new StockRecord(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]);
     }
 
-    public long getTimestampInMillis() {
-        return date.getTime();
-    }
+//    public long getTimestampInMillis() {
+//        return date.getTime();
+//    }
 
     // Gettery i Settery
 
@@ -54,14 +54,14 @@ public class StockRecord implements Serializable {
         return dateString;
     }
 
-    public void setDateString(String dateString) throws ParseException {
+    public void setDateString(String dateString){
         this.dateString = dateString;
-        this.date = sdf.parse(dateString);
+//        this.date = sdf.parse(dateString);
     }
 
-    public Date getDate() {
-        return date;
-    }
+//    public Date getDate() {
+//        return date;
+//    }
 
     public double getOpen() {
         return open;

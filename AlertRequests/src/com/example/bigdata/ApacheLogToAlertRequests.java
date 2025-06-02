@@ -29,13 +29,7 @@ public class ApacheLogToAlertRequests {
         // Przeczytaj strumień z topicu stock-input (CSV jako String -> StockRecord)
         KStream<String, String> stockRawStream = builder.stream("stock-input", Consumed.with(stringSerde, stringSerde));
         KStream<String, StockRecord> stockStream = stockRawStream
-                .mapValues(value -> {
-                    try {
-                        return StockRecord.parseFromCSVLine(value);
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .mapValues(StockRecord::parseFromCSVLine)
                 .selectKey((key, value) -> value.getStockSymbol());
 
         // Przeczytaj tablicę z topicu stock-symbols (CSV jako String -> SymbolRecord)
