@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="apache.kafka.clients" level="project" />
     <orderEntry type="library" name="apache.kafka.streams" level="project" />
+    <orderEntry type="library" name="apache.kafka.clients" level="project" />
   </component>
 </module>

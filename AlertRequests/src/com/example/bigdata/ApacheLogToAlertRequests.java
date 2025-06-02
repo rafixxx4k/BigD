@@ -7,6 +7,7 @@ import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+import java.text.ParseException;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -25,11 +26,35 @@ public class ApacheLogToAlertRequests {
         final Serde<String> stringSerde = Serdes.String();
         final StreamsBuilder builder = new StreamsBuilder();
 
-        // Przeczytaj strumień z topicu stock-input
-        KStream<String, String> stockStream = builder.stream("stock-input", Consumed.with(stringSerde, stringSerde));
+        // Przeczytaj strumień z topicu stock-input (CSV jako String -> StockRecord)
+        KStream<String, String> stockRawStream = builder.stream("stock-input", Consumed.with(stringSerde, stringSerde));
+        KStream<String, StockRecord> stockStream = stockRawStream
+                .mapValues(value -> {
+                    try {
+                        return StockRecord.parseFromCSVLine(value);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .selectKey((key, value) -> value.getStockSymbol());
 
-        // Wyświetl każdą linię na konsoli
-        stockStream.foreach((key, value) -> System.out.println("Received: key=" + key + ", value=" + value));
+        // Przeczytaj tablicę z topicu stock-symbols (CSV jako String -> SymbolRecord)
+        KTable<String, SymbolRecord> symbolTable = builder.table("stock-symbols",
+                        Consumed.with(stringSerde, stringSerde))
+                .mapValues(SymbolRecord::parseFromCSVLine);
+
+        // Połącz strumienie (join)
+        KStream<String, StockSymbolRecord> joinedStream = stockStream.join(
+                symbolTable,
+                (stock, symbol) -> new StockSymbolRecord(stock, symbol)
+        );
+
+        // Filtrowanie: tylko symbol == "A"
+        KStream<String, StockSymbolRecord> filteredStream = joinedStream
+                .filter((key, value) -> "A".equalsIgnoreCase(value.getStockRecord().getStockSymbol()));
+
+        // Wyświetl na konsoli
+        filteredStream.foreach((key, value) -> System.out.println("JOINED: " + value));
 
         final Topology topology = builder.build();
         System.out.println(topology.describe());
