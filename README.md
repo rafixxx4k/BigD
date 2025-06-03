@@ -13,7 +13,10 @@ gs://goog-dataproc-initialization-actions-${REGION}/kafka/kafka.sh
 ```
 
 rozpakuj skrypty
+przejdź do folderu
 nadaj im uprawnienia
+
+git clone https://github.com/rafixxx4k/BigD.git
 ```
 chmod +x *.sh
 ```
@@ -30,7 +33,7 @@ załaduj dane
 ./2.sh gs://pbd-24-rs/project
 ```
 uruchom przetwarzanie (zamiana klasy main)
-```
+```bash
 sudo cp /usr/lib/kafka/config/tools-log4j.properties \
  /usr/lib/kafka/
 
@@ -45,3 +48,10 @@ java -cp /usr/lib/kafka/libs/*:stock-market.jar \
 
 
 ```
+rm -rf /tmp/kafka-streams/alert-requests-application
+
+
+/bin/kafka-streams-application-reset \
+  --application-id alert-requests-application \
+  --bootstrap-servers localhost:9092 \
+  --input-topics stock-symbols,stock-input
