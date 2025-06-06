@@ -51,7 +51,10 @@ java -cp /usr/lib/kafka/libs/*:stock-market.jar \
 rm -rf /tmp/kafka-streams/alert-requests-application
 
 
-/bin/kafka-streams-application-reset \
-  --application-id alert-requests-application \
-  --bootstrap-servers localhost:9092 \
-  --input-topics stock-symbols,stock-input
+kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 \
+  --topic stock-anomalies \
+  --from-beginning \
+  --property print.key=true \
+  --property print.value=true \
+  --property key.separator=:

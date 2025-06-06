@@ -6,7 +6,7 @@ CLUSTER_NAME=$(/usr/share/google/get_metadata_value attributes/dataproc-cluster-
 BROKER="${CLUSTER_NAME}-w-0:9092"
 
 echo "Kasowanie tematów Kafka..."
-for TOPIC in stock-input stock-symbols stock-symbols-key stock-anomalies; do
+for TOPIC in stock-input stock-symbols stock-symbols-key; do
     if kafka-topics.sh --bootstrap-server $BROKER --list | grep -q "^${TOPIC}$"; then
         kafka-topics.sh --bootstrap-server $BROKER --delete --topic $TOPIC
         echo "Usunięto temat: $TOPIC"
@@ -19,7 +19,6 @@ echo "Tworzenie tematów Kafka..."
 kafka-topics.sh --bootstrap-server $BROKER --create --topic stock-input --partitions 3 --replication-factor 2
 kafka-topics.sh --bootstrap-server $BROKER --create --topic stock-symbols --partitions 1 --replication-factor 2
 kafka-topics.sh --bootstrap-server $BROKER --create --topic stock-symbols-key --partitions 1 --replication-factor 2
-kafka-topics.sh --bootstrap-server $BROKER --create --topic stock-anomalies --partitions 3 --replication-factor 2
 
 echo "Czyszczenie checkpointów Kafka Streams..."
 rm -rf /tmp/kafka-streams/*
